@@ -1,6 +1,6 @@
 ---
-title: "Reproducibility Report for Study X by Sample & Sample (20xx, Psychological Science)"
-author: "Reproducibility Project Author[s] (contact information)"
+title: "Reproducibility Report for Mechanisms of Meditation: Investigating the Components and Covariates of a Single Session of Meditation by Taylor E. Bondi (2021, Doctoral Dissertation)"
+author: "Quan Tang (qutang@ucsd.edu)"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 format:
   html:
