@@ -43,7 +43,13 @@ The data will be generated based on Python. I will generate the data based on th
 
 #### Data Analysis
 
-
+The data analysis will rely on R. All the statistical analysis and graphs from the original literature will be reprodcuted. The data analysis process include:
+1. The Pearson correlation between thought Valence and the percentages of positive/negative thoughts, as well as the changes in correlation under different levels of confidence in the responses.
+2. Independent sample t-test was conducted to compare the pre-scores for state stress, state anxiety, and trait anxiety under different conditions.
+3. A one-way ANOVA on normalized difference scores for state stress, state anxiety, and trait anxiety.
+4. Pearson correlation between condition, thought valence, expectation, state stress, state anxiety, and trait anxiety.
+5. ANCOVA on state stress and state anxiety with condition and thought valence/expectation as independent variables.
+6. ANOVA/Regression Analysis on state stress and state anxiety with condition and thought valence/expectation as independent variables.
 
 ### Differences from original study
 
