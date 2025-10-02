@@ -53,7 +53,11 @@ The data analysis will rely on R. All the statistical analysis and graphs from t
 
 ### Differences from original study
 
-Explicitly describe known differences in the analysis pipeline between the original paper and yours (e.g., computing environment). The goal, of course, is to minimize those differences, but differences may occur. Also, note whether such differences are anticipated to influence your ability to reproduce the original results.
+1. Since a normal distribution was assumed, this may differ from the original study. This could also affect the results of the data analysis.
+2. There may be slight differences between the generated data and the actual data, which will affect the results of the data analysis.
+3. The tools used for the original data analysis are unknown and may not be the same as those currently in use. This could also lead to deviations in the results.
+
+Note. The additional ANOVA/Regression Analysis does not involve data generation and does not affect the analysis results.
 
 ## Project Progress Check 1
 
