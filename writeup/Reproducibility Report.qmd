@@ -52,21 +52,22 @@ conditions （categorical variable, binomial distribution）, based on the means
 
 #### Data Analysis
 
-The data analysis will rely on R. All the statistical analysis and graphs from the original literature will be reprodcuted. The data analysis process include:
-1. The Pearson correlation between thought Valence and the percentages of positive/negative thoughts, as well as the changes in correlation under different levels of confidence in the responses.
-2. Independent sample t-test was conducted to compare the pre-scores for state stress, state anxiety, and trait anxiety under different conditions.
-3. A one-way ANOVA on normalized difference scores for state stress, state anxiety, and trait anxiety.
-4. Pearson correlation between condition, thought valence, expectation, state stress, state anxiety, and trait anxiety.
-5. ANCOVA on state stress and state anxiety with condition and thought valence/expectation as independent variables.
-6. ANOVA/Regression Analysis on state stress and state anxiety with condition and thought valence/expectation as independent variables.
+The data analysis will rely on R. The full pipeline is: 
+0. data preparation for reduction of state stress, state anxiety, and trait anxiety;
+1. Descriptive statistics for all variables by conditions;
+2. zero-order correlation analysis for all variables;
+3. ANOVA (for effects of meditation) with conditions (between-subjects) and test points (within-subjects) as independent variables, state stress, state anxiety, and trait anxiety as dependent variables;
+4. ANCOVAs (for the role of thought valence in meditation) with conditions and thought valence as independent variables, state stress and state anxiety as dependent variables;
+5. LMMs (for the role of thought valence in meditation with the data of both pre- and post-test) with conditions, thought valence, and test points as independent variables, state stress, state anxiety, and trait anxiety as dependent variables, and subject ID as random effect.
+The last two steps are the key results of reproduction. 
 
 ### Differences from original study
 
-1. Since a normal distribution was assumed, this may differ from the original study. This could also affect the results of the data analysis.
-2. There may be slight differences between the generated data and the actual data, which will affect the results of the data analysis.
-3. The tools used for the original data analysis are unknown and may not be the same as those currently in use. This could also lead to deviations in the results.
+1. Since a normal distribution was assumed, this may differ from the original study. 
+2. There may be slight differences between the generated data and the actual data.
+3. The verson of R used for the original data analysis is different from those currently in use. 
 
-Note. The additional ANOVA/Regression Analysis does not involve data generation and does not affect the analysis results.
+Note. The additional ANOVA and LMM Analysis does not involve data generation and does not affect the analysis results.
 
 ## Project Progress Check 1
 
@@ -74,11 +75,15 @@ Note. The additional ANOVA/Regression Analysis does not involve data generation 
 
 Please describe the outcome measure for the success or failure of your reproduction and how this outcome will be computed.
 
+Success criterion is When I input the original data, I could obtain the same results as the original article, and when I input the simulated data, the significance was consistent with that of the original article. 
 
 ### Pipeline progress
 
 Earlier in this report, you described the steps necessary to reproduce the key result(s) of this study. Please describe your progress on each of these steps (e.g., data preprocessing, model fitting, model evaluation).
 
+For the descriptive statistics and correlation analysis, which are exams for the data simulation, I hope the results I obtain can be as close as possible to the original literature. Therefore, generating the data might require several attempts.
+
+For ANCOVAs and LMMs, I hope they can separately detect the conditions * thought valence interaction and conditions * thought valence * test points interaction. In fact, all of this also depends on the aforementioned data generation.
 
 ## Results
 
