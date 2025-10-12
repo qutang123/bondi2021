@@ -14,7 +14,9 @@ format:
 
 This dissertation, titled "The Mechanism of Meditation: A Study on the Components and Covariates of a Single Meditation Session", mainly explores whether a single brief meditation practice can enhance well-being (operationalized as reduction of state stress and anxiety), and further examines the underlying mechanisms (expectations and thought valence) and situational factors. The author designed four experiments, comparing meditation condition with control condition (using ANCOVA), different components of the meditation, testing placebo and labeling effects, and conducting exploratory analysis at the end. The conclusion is that even a single-session meditation can bring about a considerable improvement in well-being. Moreover, expectations and thought valence play an important role in this process. The research results of the first chapter show that a 20-minute mindfulness meditation can significantly reduce state stress and state anxiety, with better effects than the control group. At the same time, meditation is more effective on dealing with negative thought than relaxation exercises. 
 
-** Apart from all the preparatory analyses, what I aim to replicate is the outcome related to the meditation mechanism. That is, the interaction effects between thought valence/expectation and conditions on state stress and anxiety reduction. **  
+** Apart from all the preparatory analyses, what I aim to replicate is the outcome related to the meditation mechanism. That is, the interaction effects between thought valence and conditions on state stress and anxiety reduction. **  
+
+During the initial stage of examining the effects of meditation, I will incorporate an ANOVA with conditions (meditation vs. control) and test points (pre-test vs. post-test) as independent variables, and state stress, state anxiety, and trait anxiety as dependent variables. The purpose is to prevent the loss of information when compositing the pre-test and post-test data.
 
 In addition, apart from using Analysis of Covariance (ANCOVA), I also plan to attempt using linear mixed model (LMM) to separately incorporate the pre-test and post-test (instead of combining them into one variable) to examine the effect of meditation, as well as the role of thought valence within the effect.
 
@@ -33,13 +35,20 @@ Project repository (on Github): https://github.com/qutang123/bondi2021.git
 
 Original paper (as hosted in your repo): https://github.com/qutang123/bondi2021/blob/7e24871f1073cf9826759e85d40d99d2692410ac/original_paper/original_paper.pdf
 
+Link of final project proposal: https://github.com/qutang123/bondi2021/blob/aaaf443a7b4cd80e19587de0a8e3772621f149b3/writeup/Reproducibility%20Report.qmd
+
 ## Methods
 
 ### Description of the steps required to reproduce the results
 
 #### Data Generation 
 
-The data will be generated based on R/Python. I will generate the data based on the mean, standard deviation and correlation coefficient provided in the original article. The questionnaire used in the original experiment, including demographical information (3 items), state anxiety and trait anxiety (40 items * twice measuring), state stress (3 items * twice measuring), expectation (1 item), thought (5 items), mindfulness (15 items), previous meditation experience (1), chronic stress (10 items), loneliness (20 items), enjoyment(1 item), and insight(1 item). Additionally, in terms of the sequence of data generation, I plan to complete the generation of the main variables (i.e., the calculated average scores of the questionnaires) first, and then generate the scores for each item based on the main variables.  
+The data will be generated based on R/Python. I will generate the data based on the mean, standard deviation and correlation coefficient provided in the original article and the ditributions of each variabe porvided by the author. The variables simulated will include the composite scores of:
+state stress (both pre- and post-test, continuous variable, normal distribution); 
+state anxiety (both pre- and post-test, continuous variable, normal distribution); 
+trait anxiety (both pre- and post-test, continuous variable, normal distribution); 
+thought valence (post-test only, discrete variable, normal distribution); 
+conditions （categorical variable, binomial distribution）, based on the means, SDs, and correlations at participant-level. 
 
 #### Data Analysis
 
