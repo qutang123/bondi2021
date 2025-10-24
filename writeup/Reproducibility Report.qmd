@@ -50,6 +50,8 @@ trait anxiety (both pre- and post-test, continuous variable, normal distribution
 thought valence (post-test only, discrete variable, normal distribution); 
 conditions （categorical variable, binomial distribution）, based on the means, SDs, and correlations at participant-level. 
 
+Regarding the preparation of data, there will be some differences compared to the original literature. In the original article, the cleaning and elimination of data were mainly based on whether the participants completed the tasks, whether they passed the attention check, whether they passed the subjective engagement check, and whether they passed the subjective validity test. Since this is a simulation study, I will not deliberately create a dataset with missing values. Attention checks, engagement levels, and subjective validity were not included in the analysis either, so these data will not be generated. The different criterion for evaluating the validity of data generation in this simulate research is whether all the data fall within the range of values of the original data. If the data of any variable fails to meet this standard, the entire dataset will be regenerated without elimination, to ensure that the sample size is consistent with the original literature.
+
 #### Data Analysis
 
 The data analysis will rely on R. The full pipeline is: 
