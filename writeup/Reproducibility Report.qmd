@@ -77,6 +77,10 @@ Note. The additional ANOVA and LMM Analysis does not involve data generation and
 
 If the significance of the interaction of LMM do not match those of ANCOVA, there are three possible explanations. First, the individual differences among the participants may have led to significant unexpected interactions. LMM estimates individual differences using random effects, while ANCOVA treats them as errors. Secondly, the spherical assumption is not valid, resulting in an underestimation of the standard error. ANCOVA assumes that the residuals at each time point are independent and have equal variances, while LMM allows for correlations between time points. Third, The operation of subtracting the pre-test score from the post-test score reduces the amount of error information, resulting in a significant effect.
 
+### Reliability and Validity
+
+In my simulation study, the key construct are mindfulness, state stress, state anxiety, trait anxiety and thought valence from the original literature. The mindfulness was manipulated by meditation, while other variables were measured by self-reported survey. She used State-Trait Anxiety Inventory (STAI; Spielberger et al., 1983) to measure the state anxiety and trait anxiety, which has been used in previous studies, and has passed numerous reliability and validity tests. For state stress, she used a 3-items self-developed questionnaire. For two measurements above, I expected to see the Cronbach's alpha, but she didn't report it. And I think, she should also report the validity of state stress measurement, because it is a new questionnaire. For thought valence, she use a single-item scale to measure it, and there aren't any report about its reliability. But she use another question to test the confidence of the answer from the participants for validity test, and I think it is a kind of reliability, which makes the measurement errors smaller.
+
 ## Project Progress Check 1
 
 ### Measure of success
