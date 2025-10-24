@@ -43,25 +43,29 @@ Link of final project proposal: https://github.com/qutang123/bondi2021/blob/aaaf
 
 #### Data Generation 
 
-The data will be generated based on R/Python. I will generate the data based on the mean, standard deviation and correlation coefficient provided in the original article and the ditributions of each variabe porvided by the author. The variables simulated will include the composite scores of:
+The data will be generated based on R/Python. I will generate the data based on the range, mean, standard deviation and correlation coefficient provided in the original article and the ditributions of each variabe porvided by the author. The variables simulated will include the composite scores of:
 state stress (both pre- and post-test, continuous variable, normal distribution); 
 state anxiety (both pre- and post-test, continuous variable, normal distribution); 
 trait anxiety (both pre- and post-test, continuous variable, normal distribution); 
 thought valence (post-test only, discrete variable, normal distribution); 
 conditions （categorical variable, binomial distribution）, based on the means, SDs, and correlations at participant-level. 
 
+A more detailed analysis plan is as follows:
+1. Using the original dataset provided by the author, the ranges, means, standard deviations and zero-order correlation coefficients (pre-test and post-test correlation coefficients of the dependent variable were included) were calculated for both the mindfulness group and the control group. 
+2. Generate the data for the mindfulness group and the control group separately。
+
 Regarding the preparation of data, there will be some differences compared to the original literature. In the original article, the cleaning and elimination of data were mainly based on whether the participants completed the tasks, whether they passed the attention check, whether they passed the subjective engagement check, and whether they passed the subjective validity test. Since this is a simulation study, I will not deliberately create a dataset with missing values. Attention checks, engagement levels, and subjective validity were not included in the analysis either, so these data will not be generated. The different criterion for evaluating the validity of data generation in this simulate research is whether all the data fall within the range of values of the original data. If the data of any variable fails to meet this standard, the entire dataset will be regenerated without elimination, to ensure that the sample size is consistent with the original literature.
 
 #### Data Analysis
 
 The data analysis will rely on R. The full pipeline is: 
-0. data preparation for reduction of state stress, state anxiety, and trait anxiety;
-1. Descriptive statistics for all variables by conditions;
-2. zero-order correlation analysis for all variables;
-3. ANOVA (for effects of meditation) with conditions (between-subjects) and test points (within-subjects) as independent variables, state stress, state anxiety, and trait anxiety as dependent variables;
-4. ANCOVAs (for the role of thought valence in meditation) with conditions and thought valence as independent variables, state stress and state anxiety as dependent variables;
-5. LMMs (for the role of thought valence in meditation with the data of both pre- and post-test) with conditions, thought valence, and test points as independent variables, state stress, state anxiety, and trait anxiety as dependent variables, and subject ID as random effect.
-The last two steps are the key results of reproduction. 
+0. Data preparation for reduction of state stress, state anxiety, and trait anxiety (post-test score minus the pre-test score, then normalized);
+1. Descriptive statistics (visualized) for all variables by conditions;
+2. Zero-order correlation analysis for all variables;
+3. Six one-way ANOVAs (for effects of meditation) with conditions (between-subjects) as independent variables, state stress, state anxiety, and trait anxiety as dependent variables, respectively (may be two-way mixed factorial ANOVA is better);
+4. Two ANCOVAs (for the role of thought valence in meditation) with conditions and thought valence as independent variables, state stress and state anxiety as dependent variables respectively, mainly focusing on the ineraction between conditions and thought valence;
+5. Two LMMs (for the role of thought valence in meditation with the data of both pre- and post-test) with conditions, thought valence, and test points as independent variables, state stress and state anxiety as dependent variables respectively, and subject ID as random effect, mainly focusing on the three-way ineraction between conditions, thought valence, and test point.
+The 4th steps is the core analysis of reproduction. 
 
 ### Differences from original study
 
@@ -71,13 +75,19 @@ The last two steps are the key results of reproduction.
 
 Note. The additional ANOVA and LMM Analysis does not involve data generation and does not affect the analysis results.
 
+If the significance of the interaction of LMM do not match those of ANCOVA, there are three possible explanations. First, the individual differences among the participants may have led to significant unexpected interactions. LMM estimates individual differences using random effects, while ANCOVA treats them as errors. Secondly, the spherical assumption is not valid, resulting in an underestimation of the standard error. ANCOVA assumes that the residuals at each time point are independent and have equal variances, while LMM allows for correlations between time points. Third, The operation of subtracting the pre-test score from the post-test score reduces the amount of error information, resulting in a significant effect.
+
 ## Project Progress Check 1
 
 ### Measure of success
 
 Please describe the outcome measure for the success or failure of your reproduction and how this outcome will be computed.
 
-Success criterion is When I input the original data, I could obtain the same results as the original article, and when I input the simulated data, the significance was consistent with that of the original article. 
+Success criterion is when I input the original data, I could obtain the same results as the original article (reporduction success), and when I input the simulated data, the significance was consistent with that of the original article (simulation success). 
+
+For the results core 2 ANCOVAs (for state stress and state anxiety), I want to get significant interaction between condition and thought valence. More specifically, for the control group, the more positive the thought valence, the greater the reduction in state stress and state anxiety. For the mindfulness group, there was no significant difference in the reduction of state stress and state anxiety across different levels of thought valence. From a theoretical perspective, this indicates that mindfulness can break the link between negative thoughts and the effects of state stress and state anxiety.
+
+The key indicators for comparing simulation and reproduction are the significance of the condition * thought valence interaction in ANCOVAs. Meanwhile, the original literature also reported the 95% confidence interval of the condition * thought valence interaction effect size partial eta square. Therefore, whether the confidence interval of the simulation effect size overlaps with the confidence interval reported in the original literature is also one of the references.
 
 ### Pipeline progress
 
