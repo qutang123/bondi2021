@@ -1,0 +1,382 @@
+
+```{r}
+# Library loading
+library(tidyverse)
+library(dplyr)
+library(effectsize)
+library(ggplot2)
+library(DescTools)
+library(car)
+library(lsr)
+library(apaTables)
+library(moments)
+library(tmvtnorm)
+
+# During today's laboratory class, I thoroughly analyzed all the features of the original data and visualized them. 
+# Based on the mean, standard deviation, range and correlation of the original data, the data was generated under 
+# the assumption of normal distribution.
+
+```
+
+```{r}
+# Loading data
+setwd('/Users/quantang/Documents/WorkPlace/00bondi2021/data')
+RAW.DATA = read.csv('OriginalData.csv')
+
+# Data preparation
+# Raw sample: n = 525
+DATA = subset(RAW.DATA,
+              Finished==1 &             # excluded: 12
+              Attention.Checks >=6 &    # excluded: 26
+              Engagement >=10 &         # excluded: 48
+              Validity.survey == 1 &    # excluded: 54
+              Validity.audio ==1)       # excluded: 178
+# Final sample: n = 207
+#### Descriptive stats####
+table(DATA$Gender)
+table(DATA$Race)
+table(DATA$Year)
+summary(DATA$Age)
+sd(DATA$Age)
+```
+
+```{r}
+#### Variable Creation ####
+
+DATA$Intervention.M[is.na(DATA$Intervention.M)] = 0
+DATA$INT = ifelse(DATA$Intervention.M==1 , 'MED', 'CON')
+
+table(DATA$INT) # CON:92 | MED: 115
+
+DATA$expect.m[is.na(DATA$expect.m)] = 0
+DATA$expect.c[is.na(DATA$expect.c)] = 0
+DATA$Expectation = DATA$expect.c + DATA$expect.m 
+
+# I want not normalized data first
+# So I will normalize it after
+
+DATA$PRE.SS = DATA$pre.stress + 
+                 (11-DATA$pre.relax) +
+                 (2*(6-DATA$pre.feel))
+DATA$POST.SS = DATA$post.stress + 
+                  (11-DATA$post.relax) +
+                  (2*(6-DATA$post.feel))
+DATA$PRE.MAIA = (DATA$pre.maia.home + 
+                   DATA$pre.maia.safe +
+                   DATA$pre.feel)/18
+DATA$POST.MAIA = (DATA$post.maia.home + 
+                    DATA$post.maia.safe +
+                    DATA$post.feel)/18
+
+#freq of meditations per month
+DATA$Meditation.mult = recode_factor(DATA$Meditation.freq,  
+                              'Never' = 0,
+                              'Once a year' = 0.1,
+                              'A few times a year' = 0.25,
+                              'Once a month' = 1,
+                              'Once a week' = 4,
+                              'Several times a week' = 10,
+                              'Once a day' = 25,
+                              'Several times a day' = 50)
+DATA$Meditation.mult = as.numeric(DATA$Meditation.mult)
+DATA$Meditation.duration =  recode_factor(DATA$Meditation.duration,
+       '1-2 minutes' = 2,
+       '5 minutes' = 5,
+       '10 minutes' = 10,
+       '15 minutes' = 15,
+       '20 minutes' = 20,
+       '25 minutes' = 25,
+       '30 minutes' = 30,
+       '45 minutes' = 45,
+       '60 minutes' = 60,
+       .default = 0)
+DATA$Meditation.duration = as.numeric(DATA$Meditation.duration)
+DATA$PME = DATA$Meditation.mult * DATA$Meditation.duration #minutes spent meditation in avg month
+
+## Standardized Diff Scores (indicate % change pre to post due to intervention)
+#State Stress
+DATA$SS = (DATA$POST.SS - DATA$PRE.SS) / 30
+#State Anxiety
+DATA$SA = (DATA$POST.STAI.S - DATA$PRE.STAI.S) / 80
+#Trait Anxiety
+DATA$TA = (DATA$POST.STAI.T - DATA$PRE.STAI.T) / 80
+
+DATA$MAIA = DATA$POST.MAIA - DATA$PRE.MAIA
+
+## export datafile
+FDATA = data.frame(Con = DATA$INT,
+                   Tho = DATA$Thoughts,
+                   PRE.SA = DATA$PRE.STAI.S,
+                   PRE.TA = DATA$PRE.STAI.T,
+                   PRE.SS = DATA$PRE.SS,
+                   POS.SA = DATA$POST.STAI.S,
+                   POS.TA = DATA$POST.STAI.T,
+                   POS.SS = DATA$POST.SS)
+write.table(FDATA, file="FinalData.csv",sep=",",row.names=F)
+
+```
+
+```{r}
+# Descriptive statistics
+## THOUGHT VALENCE
+S_Tho = FDATA %>%
+  group_by(Con) %>%
+  summarise(
+    min = min(Tho),
+    max = max(Tho),
+    mean = mean(Tho),
+    sd = sd(Tho),
+    skewness = skewness(Tho),
+    kurtosis = kurtosis(Tho))
+
+## PRE.SA
+S_PRE.SA = FDATA %>%
+  group_by(Con) %>%
+  summarise(
+    min = min(PRE.SA),
+    max = max(PRE.SA),
+    mean = mean(PRE.SA),
+    sd = sd(PRE.SA),
+    skewness = skewness(PRE.SA),
+    kurtosis = kurtosis(PRE.SA))
+
+## PRE.TA
+S_PRE.TA = FDATA %>%
+  group_by(Con) %>%
+  summarise(
+    min = min(PRE.TA),
+    max = max(PRE.TA),
+    mean = mean(PRE.TA),
+    sd = sd(PRE.TA),
+    skewness = skewness(PRE.TA),
+    kurtosis = kurtosis(PRE.TA))
+
+## PRE.SS
+S_PRE.SS = FDATA %>%
+  group_by(Con) %>%
+  summarise(
+    min = min(PRE.SS),
+    max = max(PRE.SS),
+    mean = mean(PRE.SS),
+    sd = sd(PRE.SS),
+    skewness = skewness(PRE.SS),
+    kurtosis = kurtosis(PRE.SS))
+
+## POS.SA
+S_POS.SA = FDATA %>%
+  group_by(Con) %>%
+  summarise(
+    min = min(POS.SA),
+    max = max(POS.SA),
+    mean = mean(POS.SA),
+    sd = sd(POS.SA),
+    skewness = skewness(POS.SA),
+    kurtosis = kurtosis(POS.SA))
+
+## POS.TA
+S_POS.TA = FDATA %>%
+  group_by(Con) %>%
+  summarise(
+    min = min(POS.TA),
+    max = max(POS.TA),
+    mean = mean(POS.TA),
+    sd = sd(POS.TA),
+    skewness = skewness(POS.TA),
+    kurtosis = kurtosis(POS.TA))
+
+## POS.SS
+S_POS.SS = FDATA %>%
+  group_by(Con) %>%
+  summarise(
+    min = min(POS.SS),
+    max = max(POS.SS),
+    mean = mean(POS.SS),
+    sd = sd(POS.SS),
+    skewness = skewness(POS.SS),
+    kurtosis = kurtosis(POS.SS))
+
+S_Tho
+S_PRE.SS
+S_PRE.TA
+S_PRE.SA
+S_POS.SS
+S_POS.TA
+S_POS.SA
+
+DES_STAT <- list(
+  Tho = S_Tho,
+  PRE.SS = S_PRE.SS,
+  PRE.TA = S_PRE.TA,
+  PRE.SA = S_PRE.SA,
+  POS.SS = S_POS.SS,
+  POS.TA = S_POS.TA,
+  POS.SA = S_POS.SA
+)
+
+#VSIUALIZING
+ggplot(FDATA, aes(x = Tho, fill = Con)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Score by Conditions",
+    x = "Thought Valence",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+ggplot(FDATA, aes(x = PRE.SA, fill = Con)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Score by Conditions",
+    x = "State Anxiety in Pretest",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+ggplot(FDATA, aes(x = PRE.TA, fill = Con)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Score by Conditions",
+    x = "Trait Anxiety in Pretest",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+ggplot(FDATA, aes(x = PRE.SS, fill = Con)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Score by Conditions",
+    x = "State Stress in Pretest",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+ggplot(FDATA, aes(x = POS.SA, fill = Con)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Score by Conditions",
+    x = "State Anxiety in Post Test",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+ggplot(FDATA, aes(x = POS.TA, fill = Con)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Score by Conditions",
+    x = "Trait Anxiety in Post Teste",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+ggplot(FDATA, aes(x = POS.SS, fill = Con)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Score by Conditions",
+    x = "State Stress in Post Teste",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+# Correlation analysis
+
+vars <- c("Tho","PRE.SA","PRE.TA","PRE.SS","POS.SA","POS.TA","POS.SS")
+
+cor_list <- FDATA %>%
+  group_by(Con) %>%
+  group_map(~ cor(select(.x, all_of(vars))))
+  
+names(cor_list) <- unique(FDATA$Con)
+cor_list[["CON"]] 
+cor_list[["MED"]]  
+
+```
+
+```{r}
+CON_means <- lapply(DES_STAT, function(tbl) {
+  tbl$mean[tbl$Con == "CON"]
+})
+MED_means <- lapply(DES_STAT, function(tbl) {
+  tbl$mean[tbl$Con == "MED"]
+})
+
+CON_means <- unlist(CON_means)
+MED_means <- unlist(MED_means)
+
+CON_sd <- lapply(DES_STAT, function(tbl) {
+  tbl$sd[tbl$Con == "CON"]
+})
+MED_sd <- lapply(DES_STAT, function(tbl) {
+  tbl$sd[tbl$Con == "MED"]
+})
+CON_sd <- unlist(CON_sd)
+MED_sd <- unlist(MED_sd)
+
+CON_min <- lapply(DES_STAT, function(tbl) {
+  tbl$min[tbl$Con == "CON"]
+})
+MED_min <- lapply(DES_STAT, function(tbl) {
+  tbl$min[tbl$Con == "MED"]
+})
+CON_min <- unlist(CON_min)
+MED_min <- unlist(MED_min)
+
+CON_max <- lapply(DES_STAT, function(tbl) {
+  tbl$max[tbl$Con == "CON"]
+})
+MED_max <- lapply(DES_STAT, function(tbl) {
+  tbl$max[tbl$Con == "MED"]
+})
+CON_max <- unlist(CON_max)
+MED_max <- unlist(MED_max)
+
+CON_Sigma <- diag(CON_sd) %*% cor_list$CON %*% diag(CON_sd)
+MED_Sigma <- diag(MED_sd) %*% cor_list$MED %*% diag(MED_sd)
+```
+
+```{R}
+set.seed(202510)
+CON_n = 92
+MED_n = 115
+
+sim_CON_data <- rtmvnorm(n=CON_n, mean=CON_means, sigma=CON_Sigma, lower=CON_min, upper=CON_max)
+
+sim_CON_data <- round(sim_CON_data)
+
+sim_CON_data <- as.data.frame(sim_CON_data)
+colnames(sim_CON_data) <- names(CON_means)
+
+sapply(sim_CON_data, mean)
+sapply(sim_CON_data, sd)
+cor(sim_CON_data)
+
+sim_MED_data <- rtmvnorm(n=MED_n, mean=MED_means, sigma=MED_Sigma, lower=MED_min, upper=MED_max)
+
+sim_MED_data <- round(sim_MED_data)
+
+sim_MED_data <- as.data.frame(sim_MED_data)
+colnames(sim_MED_data) <- names(MED_means)
+
+sapply(sim_MED_data, mean)
+sapply(sim_MED_data, sd)
+cor(sim_MED_data)
+sim_CON_data <- sim_CON_data %>%
+  mutate(Con = "CON")
+sim_MED_data <- sim_MED_data %>%
+  mutate(Con = "MED")
+
+sim_data <- bind_rows(sim_MED_data, sim_CON_data)
+
+```
+
+
+
+
+
+
+
+
+
+
